@@ -1,21 +1,20 @@
 --liquibase formatted sql
 
 --changeset dongp:0
-CREATE TABLE public.contact (
-	active bool NULL DEFAULT true,
-	id uuid NOT NULL,
-	phone varchar(20) NULL,
-	email varchar(128) NULL,
-	web varchar(256) NULL,
-	street varchar(128) NOT NULL,
-	city varchar(64) NOT NULL,
-	state varchar(64) NOT NULL,
-	zip varchar(64) NOT NULL,
-	country varchar(64) NOT NULL,
-	created_date timestamp NOT NULL,
-	created_by varchar(64) NOT NULL,
-	updated_date timestamp NOT NULL,
-	updated_by varchar(64) NOT NULL,
-	CONSTRAINT contact_pkey PRIMARY KEY (id)
+CREATE TABLE contact (
+	id              UUID PRIMARY KEY,
+	active          BOOL NOT NULL DEFAULT true,
+	phone           TEXT,
+	email           TEXT,
+	web             TEXT,
+	street          TEXT NOT NULL,
+	city            TEXT NOT NULL,
+	state           TEXT NOT NULL,
+	zip             TEXT NOT NULL,
+	country         TEXT NOT NULL,
+	created_date    timestamp NOT NULL,
+	created_by      TEXT NOT NULL,
+	updated_date    timestamp NOT NULL,
+	updated_by      TEXT NOT NULL
 );
 
