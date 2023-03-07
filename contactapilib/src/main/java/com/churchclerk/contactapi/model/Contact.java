@@ -4,12 +4,18 @@
 package com.churchclerk.contactapi.model;
 
 import com.churchclerk.baseapi.model.BaseModel;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Objects;
 
 /**
  *
  */
+@Data
+@SuperBuilder
+@NoArgsConstructor
 public class Contact extends BaseModel {
 
     private String phone;

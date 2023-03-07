@@ -10,6 +10,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class ContactResourceSpec implements Specification<ContactEntity> {
 
@@ -56,6 +57,18 @@ public class ContactResourceSpec implements Specification<ContactEntity> {
     }
 
     private void addPredicate(CriteriaBuilder criteriaBuilder, Root<ContactEntity> root, String field, Boolean value, List<Predicate> predicates) {
+        Predicate predicate = null;
+
+        if (value != null) {
+            predicate = criteriaBuilder.equal(root.get(field), value);
+        }
+
+        if (predicate != null) {
+            predicates.add(predicate);
+        }
+    }
+
+    private void addPredicate(CriteriaBuilder criteriaBuilder, Root<ContactEntity> root, String field, UUID value, List<Predicate> predicates) {
         Predicate predicate = null;
 
         if (value != null) {

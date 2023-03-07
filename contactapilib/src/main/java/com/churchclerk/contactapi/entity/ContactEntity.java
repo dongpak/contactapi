@@ -4,12 +4,13 @@
 package com.churchclerk.contactapi.entity;
 
 import com.churchclerk.contactapi.model.Contact;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.UUID;
 
 
 /**
@@ -19,6 +20,9 @@ import java.util.Date;
  */
 @Entity
 @Table(name="contact")
+@SuperBuilder
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class ContactEntity extends Contact {
 
 	@Column(name="active")
@@ -30,7 +34,7 @@ public class ContactEntity extends Contact {
 	@Id
 	@Column(name="id")
 	@Override
-	public String getId() {
+	public UUID getId() {
 		return super.getId();
 	}
 

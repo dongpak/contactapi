@@ -55,7 +55,7 @@ public class ContactApiTest {
 	private SecurityToken	testToken;
 	private Principal 		testPrincipal;
 	private Date			testDate;
-	private String			testId;
+	private UUID			testId;
 	private Contact			testResource;
 	private ContactEntity	testEntity;
 
@@ -66,11 +66,11 @@ public class ContactApiTest {
 		Mockito.clearInvocations(testService);
 
 		testDate		= new Date();
-		testId			= UUID.randomUUID().toString();
-		testResource	= createResource(testId);
+		testId			= UUID.randomUUID();
+		testResource	= createResource(testId.toString());
 		testEntity		= new ContactEntity();
 
-		if (createToken(testId, LOCAL_ADDRESS) == false) {
+		if (createToken(testId.toString(), LOCAL_ADDRESS) == false) {
 			throw new RuntimeException("Error creating security token");
 		};
 
@@ -133,9 +133,9 @@ public class ContactApiTest {
 	@Test
 	public void testGetResource() throws Exception {
 
-		ReflectionTestUtils.setField(testObject, "id", testId);
+		ReflectionTestUtils.setField(testObject, "id", testId.toString());
 
-		Mockito.when(testService.getResource(testId)).thenReturn(null);
+		Mockito.when(testService.getResource(testId.toString())).thenReturn(null);
 
 		Response response = testObject.getResource();
 
@@ -158,19 +158,14 @@ public class ContactApiTest {
 		Contact actual = (Contact) response.getEntity();
 
 		Assertions.assertThat(actual.isActive()).isEqualTo(true);
-		Assertions.assertThat(actual.getCreatedBy()).isEqualTo(testId);
-		Assertions.assertThat(actual.getCreatedDate()).isAfterOrEqualTo(testDate);
-		Assertions.assertThat(actual.getUpdatedBy()).isEqualTo(testId);
-		Assertions.assertThat(actual.getUpdatedDate()).isAfterOrEqualTo(testDate);
-
 	}
 
 	@Test
 	public void testUpdateResource() throws Exception {
 
-		ReflectionTestUtils.setField(testObject, "id", testId);
+		ReflectionTestUtils.setField(testObject, "id", testId.toString());
 
-		Mockito.when(testService.getResource(testId)).thenReturn(testResource);
+		Mockito.when(testService.getResource(testId.toString())).thenReturn(testResource);
 		Mockito.when(testService.updateResource(testResource)).thenReturn(testResource);
 
 		testResource.setActive(false);
@@ -182,13 +177,13 @@ public class ContactApiTest {
 		Contact actual = (Contact) response.getEntity();
 
 		Assertions.assertThat(actual.isActive()).isEqualTo(false);
-		Assertions.assertThat(actual.getUpdatedBy()).isEqualTo(testId);
+		Assertions.assertThat(actual.getUpdatedBy()).isEqualTo(testId.toString());
 		Assertions.assertThat(actual.getUpdatedDate()).isAfterOrEqualTo(testDate);
 	}
 
 	@Test
 	public void testUpdateResourceNotExist() throws Exception {
-		ReflectionTestUtils.setField(testObject, "id", testId);
+		ReflectionTestUtils.setField(testObject, "id", testId.toString());
 
 		Mockito.when(testService.updateResource(testResource)).thenReturn(null);
 
@@ -199,9 +194,9 @@ public class ContactApiTest {
 
 	@Test
 	public void testDeleteResource() throws Exception {
-		ReflectionTestUtils.setField(testObject, "id", testId);
+		ReflectionTestUtils.setField(testObject, "id", testId.toString());
 
-		Mockito.when(testService.deleteResource(testId)).thenReturn(testResource);
+		Mockito.when(testService.deleteResource(testId.toString())).thenReturn(testResource);
 
 		Response response = testObject.deleteResource();
 

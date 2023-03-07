@@ -7,6 +7,7 @@ import com.churchclerk.baseapi.BaseApi;
 import com.churchclerk.baseapi.model.ApiCaller;
 import com.churchclerk.contactapi.model.Contact;
 import com.churchclerk.contactapi.service.ContactService;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,9 @@ import java.util.UUID;
  *
  */
 @Component
+@Slf4j
 @Path("/contact")
 public class ContactApi extends BaseApi<Contact> {
-
-    private static Logger logger = LoggerFactory.getLogger(ContactApi.class);
 
     @QueryParam("phone")
     protected String phoneLike;
@@ -59,7 +59,7 @@ public class ContactApi extends BaseApi<Contact> {
      *
      */
     public ContactApi() {
-        super(logger, Contact.class);
+        super(Contact.class);
         setReadRoles(ApiCaller.Role.ADMIN, ApiCaller.Role.CLERK, ApiCaller.Role.OFFICIAL, ApiCaller.Role.MEMBER, ApiCaller.Role.NONMEMBER);
         setUpdateRoles(ApiCaller.Role.ADMIN, ApiCaller.Role.CLERK, ApiCaller.Role.OFFICIAL, ApiCaller.Role.MEMBER, ApiCaller.Role.NONMEMBER);
         setCreateRoles(ApiCaller.Role.ADMIN, ApiCaller.Role.CLERK);
@@ -100,15 +100,15 @@ public class ContactApi extends BaseApi<Contact> {
 
         if (readAllowed(id, this::hasSuperRole)) {
             if (id != null) {
-                criteria.setId(id);
+                criteria.setId(UUID.fromString(id));
             }
         }
         else {
             // force return of empty array
-            criteria.setId("NOTALLOWED");
+            criteria.setId(null);
         }
 
-        logger.info("id="+criteria.getId());
+        log.info("id="+criteria.getId());
         return criteria;
     }
 
@@ -120,7 +120,7 @@ public class ContactApi extends BaseApi<Contact> {
 
         Contact resource = service.getResource(id);
 
-        if ((resource == null) || (readAllowed(resource.getId()) == false)) {
+        if ((resource == null) || (readAllowed(resource.getId().toString()) == false)) {
             throw new NotFoundException();
         }
 
@@ -135,26 +135,21 @@ public class ContactApi extends BaseApi<Contact> {
 
         checkRequiredFields(resource);
 
-        if (createAllowed(resource.getId(), this::hasSuperRole) == false) {
+        if (createAllowed(null, this::hasSuperRole) == false) {
             throw new ForbiddenException();
         }
 
-        resource.setId(UUID.randomUUID().toString());
-        resource.setCreatedBy(apiCaller.getUserid());
-        resource.setCreatedDate(new Date());
-        resource.setUpdatedBy(apiCaller.getUserid());
-        resource.setUpdatedDate(new Date());
-
+        resource.setId(UUID.randomUUID());
         return service.createResource(resource);
     }
 
     @Override
     protected Contact doUpdate(Contact resource) {
-        if ((id == null) || (id.isEmpty()) || (resource.getId() == null) || (resource.getId().isEmpty())) {
+        if ((id == null) || (id.isEmpty()) || (resource.getId() == null)) {
             throw new BadRequestException("Contact id cannot be empty");
         }
 
-        if (resource.getId().equals(id) == false) {
+        if (resource.getId().toString().equals(id) == false) {
             throw new BadRequestException("Contact id does not match");
         }
 
