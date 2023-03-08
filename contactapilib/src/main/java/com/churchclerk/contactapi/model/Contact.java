@@ -5,6 +5,7 @@ package com.churchclerk.contactapi.model;
 
 import com.churchclerk.baseapi.model.BaseModel;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -12,6 +13,7 @@ import lombok.experimental.SuperBuilder;
  *
  */
 @Data
+@EqualsAndHashCode(callSuper = true)
 @SuperBuilder
 @NoArgsConstructor
 public class Contact extends BaseModel {
